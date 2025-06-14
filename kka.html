@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Cari Sekarang</title>
+    <!-- Import font Poppins dari Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .banner {
+            position: relative;
+            text-align: center;
+            margin-bottom: 0;
+        }
+
+        .banner img {
+            width: 100%;
+            max-height: 150px;
+            object-fit: cover;
+            border-bottom: 3px solid #3498db;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            display: block;
+        }
+
+        .banner-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 28px;
+            font-weight: 600;
+            color: #fff;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 16px;
+            border-radius: 6px;
+            user-select: none;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: -10px auto 30px auto;
+            background: url('https://tse2.mm.bing.net/th?id=OIP.JE2bVytitM8W0vzhYQRQaQHaEK&pid=Api&P=0&h=220');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 40px 30px 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            box-sizing: border-box;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            box-shadow: 0 0 8px #3498db;
+            background-color: #e6f0fb;
+            color: #222;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            user-select: none;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.4);
+            transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+            /* Halus dan modern */
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #2980b9 0%, #2070a8 100%);
+            box-shadow: 0 6px 14px rgba(33, 125, 187, 0.6);
+            transform: translateY(-2px);
+        }
+
+        button:focus {
+            outline: none;
+            box-shadow: 0 0 10px 3px rgba(41, 128, 185, 0.7);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 6px rgba(33, 125, 187, 0.5);
+            background: linear-gradient(135deg, #2170a8 0%, #1c5d8b 100%);
+        }
+
+        #hasil {
+            margin-top: 20px;
+            font-weight: bold;
+            min-height: 20px;
+        }
+
+        #statusWrapper {
+            position: relative;
+            min-height: 40px;
+            overflow: hidden;
+            height: 40px;
+            margin-top: 20px;
+        }
+
+        .loading-step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            justify-content: center;
+            position: absolute;
+            width: 100%;
+            left: 0;
+            top: 50%;
+            transform: translateY(-55%);
+            opacity: 1;
+            transition: transform 0.6s ease, opacity 0.6s ease;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #3498db;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .checkmark {
+            font-size: 18px;
+            color: green;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-container {
+            margin-top: 20px;
+            width: 100%;
+            background: #ddd;
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .loading-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #3498db;
+            border-radius: 10px;
+            transition: width 0.2s ease;
+        }
+
+        .result-box {
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.85);
+            color: black;
+            user-select: none;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .readonly-input {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 8px 12px;
+            background-color: #f0f0f0;
+            justify-content: space-between;
+        }
+
+        .readonly-input span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 80%;
+        }
+
+        .copy-icon {
+            cursor: pointer;
+            font-size: 16px;
+            color: #3498db;
+            user-select: none;
+        }
+
+        .copy-icon:hover {
+            color: #217dbb;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Banner -->
+    <div class="banner">
+        <img src="https://tse4.mm.bing.net/th?id=OIP.5_RY_7rHhM7HKUjzTG9fWAHaCr&pid=Api&P=0&h=220" alt="Banner" />
+        <div class="banner-text">Are you ready?</div>
+    </div>
+
+    <!-- Konten -->
+    <div class="container">
+        <h2>Masukkan Pencarian</h2>
+        <input type="text" id="teksInput" placeholder="Tulis sesuatu..." />
+        <button onclick="cariSekarang()">Cari Sekarang</button>
+
+        <div id="statusWrapper"></div>
+
+        <div class="loading-container" id="loadingContainer">
+            <div class="loading-bar" id="loadingBar"></div>
+        </div>
+
+        <div id="hasil"></div>
+
+        <!-- Hasil Otomatis -->
+        <div id="hasilBox" class="result-box">
+            <div class="form-group">
+                <label for="namaHasil">Nama</label>
+                <div class="readonly-input">
+                    <span id="namaHasil"></span>
+                    <span class="copy-icon" onclick="salinTeks('namaHasil')">📋</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="watakHasil">Watak</label>
+                <div class="readonly-input">
+                    <span id="watakHasil"></span>
+                    <span class="copy-icon" onclick="salinTeks('watakHasil')">📋</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function salinTeks(id) {
+            const isi = document.getElementById(id).innerText;
+            if (!isi) {
+                alert("Belum ada teks untuk disalin.");
+                return;
+            }
+            navigator.clipboard.writeText(isi).then(() => {
+                alert("Teks disalin: " + isi);
+            });
+        }
+
+        function cariSekarang() {
+            const input = document.getElementById("teksInput").value;
+            const hasilDiv = document.getElementById("hasil");
+            const statusWrapper = document.getElementById("statusWrapper");
+            const loadingContainer = document.getElementById("loadingContainer");
+            const loadingBar = document.getElementById("loadingBar");
+            const namaHasil = document.getElementById("namaHasil");
+            const watakHasil = document.getElementById("watakHasil");
+
+            if (input.trim() === "") {
+                hasilDiv.innerHTML = "Silakan masukkan teks untuk mencari.";
+                return;
+            }
+
+            hasilDiv.innerHTML = "";
+            namaHasil.textContent = "";
+            watakHasil.textContent = "";
+
+            loadingContainer.style.display = "block";
+            loadingBar.style.width = "0%";
+            statusWrapper.innerHTML = "";
+
+            const steps = [
+                { percent: 15, text: "Melakukan pencarian..." },
+                { percent: 30, text: "Pencarian dimulai..." },
+                { percent: 45, text: "Sedang mencari..." },
+                { percent: 60, text: "Melakukan pengecekan..." },
+                { percent: 75, text: "Mencoba menemukan..." },
+                { percent: 85, text: "Hampir selesai..." }
+            ];
+
+            let currentPercent = 0;
+            const interval = setInterval(() => {
+                currentPercent++;
+                if (currentPercent > 85) {
+                    clearInterval(interval);
+                }
+                loadingBar.style.width = currentPercent + "%";
+            }, 100);
+
+            function tampilkanLangkah(index, prevStep) {
+                if (index >= steps.length) return;
+
+                const step = steps[index];
+
+                const stepDiv = document.createElement("div");
+                stepDiv.className = "loading-step";
+                stepDiv.style.opacity = 0;
+                stepDiv.style.transform = "translateY(20px)";
+                stepDiv.style.zIndex = 10;
+
+                const spinner = document.createElement("div");
+                spinner.className = "spinner";
+
+                const checkmark = document.createElement("div");
+                checkmark.className = "checkmark";
+                checkmark.textContent = "✔️";
+
+                const text = document.createElement("span");
+                text.textContent = step.text;
+
+                stepDiv.appendChild(spinner);
+                stepDiv.appendChild(checkmark);
+                stepDiv.appendChild(text);
+
+                statusWrapper.appendChild(stepDiv);
+
+                requestAnimationFrame(() => {
+                    stepDiv.style.transition = "transform 0.6s ease, opacity 0.6s ease";
+                    stepDiv.style.opacity = 1;
+                    stepDiv.style.transform = "translateY(0)";
+                });
+
+                setTimeout(() => {
+                    if (index < steps.length - 1) {
+                        spinner.style.display = "none";
+                        checkmark.style.display = "inline-block";
+                    }
+                }, 900);
+
+                if (prevStep) {
+                    prevStep.style.transform = "translateY(-20px)";
+                    prevStep.style.opacity = 0;
+                    prevStep.addEventListener("transitionend", () => {
+                        if (prevStep.parentNode) prevStep.parentNode.removeChild(prevStep);
+                    }, { once: true });
+                }
+
+                setTimeout(() => {
+                    tampilkanLangkah(index + 1, stepDiv);
+                }, 1500);
+            }
+
+            tampilkanLangkah(0, null);
+
+            setTimeout(() => {
+                loadingBar.style.width = "100%";
+                hasilDiv.innerHTML = "✅ Berhasil didapatkan";
+                namaHasil.textContent = "Kiswot";
+                watakHasil.textContent = "Mesekan lenca";
+                statusWrapper.innerHTML = "";
+            }, 1500 * steps.length + 500);
+        }
+    </script>
+</body>
+
+</html>
